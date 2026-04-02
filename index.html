@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>د. بيشوي ثروت - Doctor Science</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="language-overlay" class="overlay">
+        <div class="overlay-content">
+            <img src="image_2.png" alt="Doctor Science" class="overlay-logo">
+            <h2>مرحباً بك في منصة د. بيشوي ثروت</h2>
+            <p>اختر لغة الدراسة المفضلة:</p>
+            <div class="lang-btns">
+                <button class="choice-btn" onclick="setTrack('علوم')">عربي - علوم</button>
+                <button class="choice-btn" onclick="setTrack('Science')">English - Science</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <header>
+            <div class="container nav-box">
+                <div class="logo" id="main-logo">Doctor Science</div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#" onclick="location.reload();">تغيير المسار</a></li>
+                        <li><button id="dark-mode-toggle"><i class="fas fa-moon"></i></button></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <h1>عالم العلوم مع Doctor Science</h1>
+                    <p>تعلم العلوم بأسلوب مبتكر مع الدكتور بيشوي ثروت.</p>
+                    <a href="#stages" class="cta-btn">ابدأ الآن</a>
+                </div>
+                <div class="hero-image">
+                    <img src="image_2.png" alt="د. بيشوي ثروت" class="profile-img">
+                </div>
+            </div>
+        </section>
+
+        <section class="stages" id="stages">
+            <div class="container">
+                <h2 class="section-title">اختر مرحلتك الدراسية</h2>
+                <div class="stages-grid">
+                    <div class="stage-card" onclick="loadContent('ابتدائي')">
+                        <span class="icon">🖍️</span>
+                        <h3>المرحلة الابتدائية</h3>
+                    </div>
+                    <div class="stage-card" onclick="loadContent('اعدادي')">
+                        <span class="icon">📚</span>
+                        <h3>المرحلة الإعدادية</h3>
+                    </div>
+                    <div class="stage-card" onclick="loadContent('ثانوي')">
+                        <span class="icon">🎓</span>
+                        <h3>المرحلة الثانوية</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lessons-section" class="lessons" style="display:none;">
+            <div class="container">
+                <h2 id="current-stage-title" class="section-title"></h2>
+                <div id="lessons-container" class="lessons-grid"></div>
+                <button class="back-btn" onclick="showHome()">← العودة للمراحل</button>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container footer-content">
+                <div class="social-links">
+                    <a href="https://www.facebook.com/beshoy.tharwat.663912/" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.youtube.com/@BeshoyTharwat_DoctorScience" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://wa.me/201285758754" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <p>© 2026  جميع الحقوق محفوظة للدكتور بيشوي ثروت وتم تعديلها ونشائتها بواسطه VS-SOKAR ©</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
