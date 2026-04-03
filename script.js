@@ -1,5 +1,5 @@
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwFKvOvJeP7zjl_KV475zGoVMkrHJvtisD2n3pr1DYEQV5UV8zNwmyv6zUJlNMjEoGGunYmmdQciG_/pub?output=csv';
-const CODE_SERVER_PHONE = '584261147304'; // سيرفر الأكواد اللي بيبعت للمستر
+const DOCTOR_PHONE = '201285758754'; // الرسالة هتروح للدكتور مباشرة
 
 let allLessons = [];
 let currentTrack = '';
@@ -48,26 +48,27 @@ document.getElementById('registration-form').onsubmit = async function(e) {
 
     await fetchData(); 
 
-    // 1. لو الطالب معاه كود فعلاً وعايز يدخل
+    // حالة 1: الطالب معاه الكود (اللي المستر إداهوله) وعايز يفتح المراجعات
     if (inputCode.trim() !== "") {
         const isAuthorized = allLessons.some(item => item.phone === phone && item.code === inputCode);
         if (isAuthorized || inputCode === "1234") {
-            alert("تم التحقق بنجاح!");
+            alert("تم التحقق! افتح المراجعات يا بطل.");
             closePremium();
             loadContent(level + ' مميز');
             return;
         } else {
-            alert("الكود غير صحيح لهذا الرقم.");
+            alert("الكود غلط أو لسه متفعلش للرقم ده.");
             return;
         }
     }
 
-    // 2. لو لسه بيسجل (بيطلب كود من السيرفر)
-    // الرسالة هتروح لسيرفر الأكواد بصيغة يفهمها عشان يبعت للمستر
-    const serverMessage = `طلب_توليد_كود%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}`;
-    window.open(`https://wa.me/${CODE_SERVER_PHONE}?text=${serverMessage}`);
+    // حالة 2: الطالب لسه بيسجل (بيبعت بياناته للمستر)
+    // الرسالة هتروح للمستر، والسيرفر (58+) هيقوم بدوره ويبعت الكود للمستر
+    const msgToDoctor = `طلب_اشتراك_مُميز%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}%0A-- من فضلك فعل الكود --`;
     
-    alert("جاري طلب كود التفعيل من السيرفر... تواصل مع المستر لاستلام الكود بعد الدفع.");
+    window.open(`https://wa.me/${DOCTOR_PHONE}?text=${msgToDoctor}`);
+    
+    alert("تم إرسال بياناتك للمستر. استلم الكود منه بعد الدفع وسجله هنا.");
     closePremium();
 };
 
@@ -87,7 +88,7 @@ function loadContent(stageName) {
     );
 
     if (filtered.length === 0) {
-        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>لا يوجد مراجعات حالياً.</p>";
+        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>المراجعات هتنزل هنا، استعد!</p>";
     } else {
         filtered.forEach(lesson => {
             const card = document.createElement('div');
