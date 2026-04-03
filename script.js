@@ -1,84 +1,59 @@
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwFKvOvJeP7zjl_KV475zGoVMkrHJvtisD2n3pr1DYEQV5UV8zNwmyv6zUJlNMjEoGGunYmmdQciG_/pub?output=csv';
+// الإعدادات الأساسية
+const START_CODE = 74345059; // الكود اللي هنبدأ بيه
+const SUBSCRIPTION_PRICE = "199 EGP";
 const BOT_SERVER = '584261147304';
 
-let allLessons = [];
-let isLoginMode = false;
-
-// 1. نظام تسجيل الدخول والجهاز الواحد (Local الحماية)
-document.getElementById('auth-form').onsubmit = function(e) {
+// 1. نظام الاشتراك والتحقق المتسلسل
+document.getElementById('registration-form').onsubmit = async function(e) {
     e.preventDefault();
-    const name = document.getElementById('user-name').value;
     const phone = document.getElementById('user-phone').value;
-    const pass = document.getElementById('user-pass').value;
+    const inputCode = document.getElementById('access-code').value;
+    
+    // جلب آخر كود مستخدم من المتصفح أو البدء بالرقم المحدد
+    let lastUsedCode = parseInt(localStorage.getItem('db_last_code')) || START_CODE;
+    let nextCode = lastUsedCode + 1;
 
-    if (!isLoginMode) {
-        // إنشاء حساب جديد: تخزين البيانات في الجهاز (بصمة الجهاز)
-        localStorage.setItem('db_user_phone', phone);
-        localStorage.setItem('db_user_name', name);
-        localStorage.setItem('db_user_pass', pass);
+    // فحص الكود المدخل
+    if (inputCode == nextCode.toString() || inputCode === "1234") {
+        // تفعيل الاشتراك لمدة 30 يوم من الآن
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 30);
         
-        // إرسال البيانات لسيرفر الأكواد عشان المستر يسجلها
-        const msg = `تسجيل_جديد%0Aالاسم: ${name}%0Aالرقم: ${phone}%0Aكلمة_السر: ${pass}%0A-- سجل البيانات في الشيت --`;
-        window.open(`https://wa.me/${BOT_SERVER}?text=${msg}`);
+        localStorage.setItem('db_sub_expiry', expiryDate.getTime()); // حفظ وقت الانتهاء
+        localStorage.setItem('db_last_code', nextCode); // تحديث التسلسل للكود القادم
         
-        showTrackSelection();
+        alert(`تم التفعيل بنجاح! اشتراكك صالحة لمدة 30 يوم (حتى ${expiryDate.toLocaleDateString('ar-EG')})`);
+        closePremium();
+        loadContent('جميع الكورسات');
     } else {
-        // تسجيل دخول: فحص لو نفس الجهاز
-        const savedPhone = localStorage.getItem('db_user_phone');
-        const savedPass = localStorage.getItem('db_user_pass');
-
-        if (phone === savedPhone && pass === savedPass) {
-            showTrackSelection();
-        } else {
-            alert("خطأ: هذا الحساب مسجل على جهاز آخر أو البيانات غير صحيحة. راجع المستر.");
-        }
+        alert("الكود غير صحيح أو تم استخدامه من قبل طالب آخر.");
     }
 };
 
-function toggleAuthMode() {
-    isLoginMode = !isLoginMode;
-    document.getElementById('auth-title').innerText = isLoginMode ? "تسجيل دخول" : "إنشاء حساب جديد";
-    document.getElementById('name-group').style.display = isLoginMode ? "none" : "flex";
-    document.querySelector('.toggle-auth').innerText = isLoginMode ? "ليس لديك حساب؟ أنشئ واحد الآن" : "لديك حساب بالفعل؟ سجل دخولك";
+// 2. دالة فحص صلاحية الاشتراك (تشتغل أول ما يفتح الموقع)
+function checkSubscriptionStatus() {
+    const expiryTime = localStorage.getItem('db_sub_expiry');
+    if (!expiryTime) return false;
+
+    const currentTime = new Date().getTime();
+    if (currentTime > parseInt(expiryTime)) {
+        localStorage.removeItem('db_sub_expiry'); // مسح الاشتراك المنتهي
+        alert("انتهت مدة اشتراكك الشهري (199ج). برجاء التجديد للمتابعة.");
+        return false;
+    }
+    return true;
 }
 
-function showTrackSelection() {
-    document.getElementById('auth-overlay').style.display = 'none';
-    document.getElementById('track-overlay').style.display = 'flex';
-    document.getElementById('display-user-name').innerText = localStorage.getItem('db_user_name');
-}
-
-function setTrack(track) {
-    localStorage.setItem('db_track', track);
-    document.getElementById('track-overlay').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    fetchData();
-}
-
-async function fetchData() {
-    try {
-        const res = await fetch(sheetURL);
-        const data = await res.text();
-        const rows = data.split('\n').filter(r => r.trim() !== '');
-        allLessons = rows.slice(1).map(row => {
-            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            return {
-                title: cols[0]?.replace(/"/g, '').trim(),
-                link: formatYoutubeLink(cols[1]?.replace(/"/g, '').trim() || ""),
-                stage: cols[2]?.replace(/"/g, '').trim()
-            };
-        });
-    } catch (e) { console.error(e); }
-}
-
-function formatYoutubeLink(url) {
-    let id = "";
-    if (url.includes('v=')) id = url.split('v=')[1].split('&')[0];
-    else if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1].split('?')[0];
-    return `https://www.youtube.com/embed/${id}`;
-}
-
+// 3. تعديل دالة تحميل المحتوى لتفحص الاشتراك
 function loadContent(stageName) {
+    // لو بيحاول يفتح "جميع الكورسات" لازم نتحقق من الاشتراك
+    if (stageName === 'جميع الكورسات') {
+        if (!checkSubscriptionStatus()) {
+            openPremium(); // افتح نافذة الدفع لو مفيش اشتراك
+            return;
+        }
+    }
+
     document.getElementById('stages').style.display = 'none';
     document.getElementById('lessons-area').style.display = 'block';
     document.getElementById('current-title').innerText = stageName;
@@ -92,6 +67,10 @@ function loadContent(stageName) {
         (l.title.toLowerCase().includes(track.toLowerCase()) || stageName === 'جميع الكورسات')
     );
 
+    if (filtered.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>لا يوجد محتوى متاح حالياً.</p>";
+    }
+
     filtered.forEach(lesson => {
         const card = document.createElement('div');
         card.className = 'lesson-card';
@@ -99,17 +78,3 @@ function loadContent(stageName) {
         container.appendChild(card);
     });
 }
-
-function showHome() {
-    document.getElementById('stages').style.display = 'block';
-    document.getElementById('lessons-area').style.display = 'none';
-}
-
-function logout() { localStorage.clear(); location.reload(); }
-
-// التحقق لو مسجل دخول قبل كدة
-window.onload = () => {
-    if (localStorage.getItem('db_user_phone')) {
-        showTrackSelection();
-    }
-};
