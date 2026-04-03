@@ -3,119 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>د. بيشوي ثروت - Doctor Science</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Dr. Beshoy | منصة الدكتور بيشوي ثروت</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="language-overlay" class="overlay">
-        <div class="overlay-content">
-            <img src="image_2.png" alt="Doctor Science" class="overlay-logo">
-            <h2>مرحباً بك في منصة Doctor Science</h2>
-            <p>اختر مسار الدراسة الخاص بك:</p>
-            <div class="lang-btns">
-                <button class="choice-btn" onclick="setTrack('علوم')">عربي - علوم</button>
-                <button class="choice-btn" onclick="setTrack('Science')">English - Science</button>
+    <div id="auth-overlay" class="overlay">
+        <div class="auth-card">
+            <div class="profile-main">
+                <img src="image_2.png" alt="د. بيشوي ثروت" class="doctor-thumb">
             </div>
-        </div>
-    </div>
-
-    <div id="premium-modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closePremium()">&times;</span>
-            <h3>⭐ باقة المميز (المراجعات النهائية)</h3>
-            <p>سعر الاشتراك: <b>500 ج.م</b> شهرياً</p>
-            <form id="registration-form">
-                <input type="text" id="student-name" placeholder="اسمك الثلاثي" required>
-                <input type="tel" id="student-phone" placeholder="رقم موبايلك" required>
-                <select id="student-level">
-                    <option value="ابتدائي">المرحلة الابتدائية</option>
-                    <option value="اعدادي">المرحلة الإعدادية</option>
-                    <option value="ثانوي">المرحلة الثانوية</option>
-                </select>
-                <input type="text" id="access-code" placeholder="أدخل كود التفعيل (إذا كنت مشتركاً)">
-                
-                <div class="payment-box">
-                    <p>للتحويل: <b>01285758754</b></p>
-                    <small>(فودافون كاش أو انستا باي)</small>
+            <h2 id="auth-title">إنشاء حساب جديد</h2>
+            <form id="auth-form">
+                <div class="input-group" id="name-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="user-name" placeholder="الاسم الثلاثي">
                 </div>
-                <button type="submit" class="submit-premium">دخول / اشتراك</button>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="user-phone" placeholder="رقم الموبايل (الواتساب)" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="user-pass" placeholder="كلمة المرور" required>
+                </div>
+                <button type="submit" id="auth-submit" class="btn-main">دخول / تسجيل</button>
+                <p class="toggle-auth" onclick="toggleAuthMode()">لديك حساب بالفعل؟ سجل دخولك</p>
             </form>
         </div>
     </div>
 
-    <div id="main-content" style="display: none;">
-        <header>
-            <div class="container nav-box">
-                <div class="logo" id="main-logo">د. بيشوي ثروت</div>
-                <nav>
-                    <ul class="nav-links">
-                        <li><a href="#" onclick="location.reload();">تغيير المسار</a></li>
-                        <li><button id="dark-mode-toggle"><i class="fas fa-moon"></i></button></li>
-                    </ul>
-                </nav>
+    <div id="track-overlay" class="overlay" style="display:none;">
+        <div class="overlay-content">
+            <h3>مرحباً بك.. اختر مسارك الدراسي</h3>
+            <div class="lang-btns">
+                <button class="btn-main" onclick="setTrack('علوم')">المنهج العربي (علوم)</button>
+                <button class="btn-outline" onclick="setTrack('Science')">English (Science)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" style="display:none;">
+        <header class="main-header">
+            <div class="container header-flex">
+                <div class="logo">Dr.<span>Beshoy</span></div>
+                <div class="user-info">
+                    <span id="display-user-name"></span>
+                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
             </div>
         </header>
 
-        <section class="hero" id="home">
+        <section class="hero-section">
             <div class="container hero-grid">
                 <div class="hero-text">
-                    <h1>تعلم العلوم بذكاء 🤖</h1>
-                    <p>منصة متكاملة للمرحلة الابتدائية والإعدادية والثانوية مع باقة المميز للمراجعات.</p>
-                    <a href="#stages" class="cta-btn">ابدأ رحلتك الآن</a>
+                    <h1>منصة الدكتور<br><span>بيشوي ثروت</span></h1>
+                    <p>تعلم العلوم والكيمياء بأحدث الوسائل التكنولوجية.</p>
                 </div>
-                <div class="hero-image">
-                    <img src="image_2.png" alt="Doctor Science" class="profile-img">
+                <div class="hero-img-box">
+                    <img src="image_2.png" alt="Doctor Science" class="hero-doctor-img">
                 </div>
             </div>
         </section>
 
-        <section class="stages" id="stages">
+        <section class="stages-section" id="stages">
             <div class="container">
-                <h2 class="section-title">المراحل الدراسية</h2>
-                <div class="stages-grid">
-                    <div class="stage-card" onclick="loadContent('ابتدائي')">
-                        <span class="icon">🖍️</span>
-                        <h3>ابتدائي</h3>
+                <div class="section-nav">
+                    <h2>المراحل الدراسية</h2>
+                    <button class="all-courses-btn" onclick="loadContent('جميع الكورسات')">⭐ جميع الكورسات</button>
+                </div>
+                <div class="stages-container">
+                    <div class="stage-item" onclick="loadContent('ابتدائي')">
+                        <i class="fas fa-microscope"></i>
+                        <h3>المرحلة الابتدائية</h3>
                     </div>
-                    <div class="stage-card" onclick="loadContent('اعدادي')">
-                        <span class="icon">📚</span>
-                        <h3>اعدادي</h3>
+                    <div class="stage-item" onclick="loadContent('اعدادي')">
+                        <i class="fas fa-flask"></i>
+                        <h3>المرحلة الإعدادية</h3>
                     </div>
-                    <div class="stage-card" onclick="loadContent('ثانوي')">
-                        <span class="icon">🎓</span>
-                        <h3>ثانوي</h3>
-                    </div>
-                    <div class="stage-card premium-btn" onclick="openPremium()">
-                        <span class="icon">⭐</span>
-                        <h3>المميز</h3>
-                        <small>مراجعات خاصة</small>
+                    <div class="stage-item" onclick="loadContent('ثانوي')">
+                        <i class="fas fa-atom"></i>
+                        <h3>المرحلة الثانوية</h3>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="lessons-section" class="lessons" style="display:none;">
+        <section id="lessons-area" class="lessons-area" style="display:none;">
             <div class="container">
-                <h2 id="current-stage-title" class="section-title"></h2>
-                <div id="lessons-container" class="lessons-grid"></div>
-                
-                <div class="ai-box">
-                    <h4>🤖 مساعد الذكاء الاصطناعي</h4>
-                    <p>مش فاهم جزء من الفيديو؟ اسأل المساعد دلوقتي.</p>
-                    <a href="https://wa.me/201285758754?text=انا مشترك في باقة المميز وعايز مساعدة في درس..." class="ai-link">اسأل المساعد (AI)</a>
+                <div class="area-header">
+                    <h2 id="current-title"></h2>
+                    <button class="btn-back" onclick="showHome()">عودة للرئيسية</button>
                 </div>
-
-                <button class="back-btn" onclick="showHome()">العودة للرئيسية</button>
+                <div id="video-grid" class="video-grid"></div>
             </div>
         </section>
 
-        <footer>
-            <div class="container">
-                <p>© 2026 جميع الحقوق محفوظة للدكتور بيشوي ثروت و VS-SOKAR </p>
-            </div>
+        <footer class="footer">
+            <p>© 2026 جميع الحقوق محفوظة للدكتور بيشوي ثروت</p>
         </footer>
     </div>
 
