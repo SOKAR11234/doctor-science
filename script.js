@@ -1,4 +1,6 @@
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwFKvOvJeP7zjl_KV475zGoVMkrHJvtisD2n3pr1DYEQV5UV8zNwmyv6zUJlNMjEoGGunYmmdQciG_/pub?output=csv';
+const MASTER_CODE = '74345059'; // غير الكود ده لأي رقم أنت عاوزه (كود تفعيل المميز)
+
 let allLessons = [];
 let currentTrack = '';
 
@@ -18,7 +20,7 @@ async function fetchData() {
             }
             return null;
         }).filter(item => item !== null);
-    } catch (e) { console.error("Error fetching data:", e); }
+    } catch (e) { console.error("Error:", e); }
 }
 
 function formatYoutubeLink(url) {
@@ -44,11 +46,19 @@ document.getElementById('registration-form').onsubmit = function(e) {
     const name = document.getElementById('student-name').value;
     const phone = document.getElementById('student-phone').value;
     const level = document.getElementById('student-level').value;
-    
-    const message = `طلب اشتراك مُميز:%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}%0Aجاري إرسال الإيصال...`;
-    window.open(`https://wa.me/201285758754?text=${message}`);
-    alert("تم تسجيل البيانات، يرجى إرسال صورة التحويل عبر الواتساب الآن.");
-    closePremium();
+    const inputCode = document.getElementById('access-code').value;
+
+    // التحقق من كود التفعيل
+    if (inputCode === MASTER_CODE) {
+        alert("تم تفعيل باقة المميز بنجاح!");
+        closePremium();
+        loadContent(level + ' مميز'); // يفتح المراجعات فوراً
+    } else {
+        const message = `طلب اشتراك مُميز:%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}%0Aجاري إرسال الإيصال...`;
+        window.open(`https://wa.me/201285758754?text=${message}`);
+        alert("الكود غير صحيح. تم تحويلك للواتساب لإرسال الإيصال والحصول على كود التفعيل.");
+        closePremium();
+    }
 };
 
 function loadContent(stageName) {
