@@ -1,55 +1,60 @@
-// الإعدادات الأساسية
-const START_CODE = 74345059; // الكود اللي هنبدأ بيه
-const SUBSCRIPTION_PRICE = "199 EGP";
+const START_CODE_BASE = 74345059;
 const BOT_SERVER = '584261147304';
+const DOCTOR_INSTAPAY = 'drbeshoy@instapay'; // عنوان إنستا باي للمستر
 
-// 1. نظام الاشتراك والتحقق المتسلسل
+// 1. نظام التحقق والاشتراك الشهري
 document.getElementById('registration-form').onsubmit = async function(e) {
     e.preventDefault();
-    const phone = document.getElementById('user-phone').value;
-    const inputCode = document.getElementById('access-code').value;
-    
-    // جلب آخر كود مستخدم من المتصفح أو البدء بالرقم المحدد
-    let lastUsedCode = parseInt(localStorage.getItem('db_last_code')) || START_CODE;
-    let nextCode = lastUsedCode + 1;
+    const name = localStorage.getItem('db_user_name');
+    const phone = localStorage.getItem('db_user_phone');
+    const inputCode = document.getElementById('access-code').value.trim();
 
-    // فحص الكود المدخل
-    if (inputCode == nextCode.toString() || inputCode === "1234") {
-        // تفعيل الاشتراك لمدة 30 يوم من الآن
+    // حساب الكود المتسلسل القادم بناءً على عدد المرات اللي الطالب ده فعل فيها أو من السيرفر
+    // ملاحظة: لجعل التسلسل عالمي لكل الطلاب، الأفضل للمستر إعطاء الكود يدوياً من السيرفر
+    if (inputCode === "") {
+        // طلب كود جديد من السيرفر (58+)
+        const serverMsg = `طلب_اشتراك_199ج%0Aالطالب: ${name}%0Aالرقم: ${phone}%0Aالدفع: انستا_باي`;
+        window.open(`https://wa.me/${BOT_SERVER}?text=${serverMsg}`);
+        alert("تم تحويلك للسيرفر لطلب الكود. بعد التحويل بـ 199ج على إنستا باي، المستر هيديك كود التفعيل.");
+        return;
+    }
+
+    // التحقق من الكود (سواء كود الماستر أو الكود المتسلسل)
+    // هنا بنفترض إن المستر بيدي الكود للطالب بناءً على التسلسل
+    if (parseInt(inputCode) >= START_CODE_BASE || inputCode === "1234") {
+        // تفعيل لمدة 30 يوم
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + 30);
         
-        localStorage.setItem('db_sub_expiry', expiryDate.getTime()); // حفظ وقت الانتهاء
-        localStorage.setItem('db_last_code', nextCode); // تحديث التسلسل للكود القادم
+        localStorage.setItem('db_sub_expiry', expiryDate.getTime());
         
-        alert(`تم التفعيل بنجاح! اشتراكك صالحة لمدة 30 يوم (حتى ${expiryDate.toLocaleDateString('ar-EG')})`);
+        alert(`عاش يا بطل! تم تفعيل "جميع الكورسات" بنجاح.\nصالح حتى: ${expiryDate.toLocaleDateString('ar-EG')}`);
         closePremium();
         loadContent('جميع الكورسات');
     } else {
-        alert("الكود غير صحيح أو تم استخدامه من قبل طالب آخر.");
+        alert("الكود ده قديم أو غير صحيح. تأكد من الكود المستلم من المستر.");
     }
 };
 
-// 2. دالة فحص صلاحية الاشتراك (تشتغل أول ما يفتح الموقع)
-function checkSubscriptionStatus() {
-    const expiryTime = localStorage.getItem('db_sub_expiry');
-    if (!expiryTime) return false;
-
-    const currentTime = new Date().getTime();
-    if (currentTime > parseInt(expiryTime)) {
+// 2. دالة فحص الصلاحية (تمنع الدخول لو الشهر خلص)
+function isSubscriptionValid() {
+    const expiry = localStorage.getItem('db_sub_expiry');
+    if (!expiry) return false;
+    
+    if (new Date().getTime() > parseInt(expiry)) {
         localStorage.removeItem('db_sub_expiry'); // مسح الاشتراك المنتهي
-        alert("انتهت مدة اشتراكك الشهري (199ج). برجاء التجديد للمتابعة.");
         return false;
     }
     return true;
 }
 
-// 3. تعديل دالة تحميل المحتوى لتفحص الاشتراك
+// 3. تعديل تحميل المحتوى ليدعم القفل التلقائي
 function loadContent(stageName) {
-    // لو بيحاول يفتح "جميع الكورسات" لازم نتحقق من الاشتراك
+    // حماية قسم "جميع الكورسات"
     if (stageName === 'جميع الكورسات') {
-        if (!checkSubscriptionStatus()) {
-            openPremium(); // افتح نافذة الدفع لو مفيش اشتراك
+        if (!isSubscriptionValid()) {
+            alert("عفواً! لازم تشترك في باقة الـ 199ج عشان تفتح جميع الكورسات.");
+            openPremium();
             return;
         }
     }
@@ -62,13 +67,14 @@ function loadContent(stageName) {
     container.innerHTML = '';
 
     const track = localStorage.getItem('db_track');
+    // فلترة الدروس: تظهر لو هي تبع المرحلة والمسار، أو لو القسم هو "جميع الكورسات"
     const filtered = allLessons.filter(l => 
         (l.stage.includes(stageName)) && 
         (l.title.toLowerCase().includes(track.toLowerCase()) || stageName === 'جميع الكورسات')
     );
 
     if (filtered.length === 0) {
-        container.innerHTML = "<p style='text-align:center;'>لا يوجد محتوى متاح حالياً.</p>";
+        container.innerHTML = "<p style='text-align:center; padding:20px;'>لا يوجد دروس مرفوعة حالياً لهذا القسم.</p>";
     }
 
     filtered.forEach(lesson => {
@@ -77,4 +83,10 @@ function loadContent(stageName) {
         card.innerHTML = `<iframe src="${lesson.link}" frameborder="0" allowfullscreen></iframe><h4>${lesson.title}</h4>`;
         container.appendChild(card);
     });
+}
+
+// دالة مساعدة لنسخ عنوان إنستا باي
+function copyInsta() {
+    navigator.clipboard.writeText(DOCTOR_INSTAPAY);
+    alert("تم نسخ عنوان InstaPay: " + DOCTOR_INSTAPAY);
 }
