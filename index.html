@@ -90,4 +90,109 @@
 
     <script src="script.js"></script>
 </body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Science - المميز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="language-overlay" class="overlay">
+        <div class="overlay-content">
+            <img src="image_2.png" alt="Doctor Science" class="overlay-logo">
+            <h2>مرحباً بك في منصة د. بيشوي</h2>
+            <div class="lang-btns">
+                <button class="choice-btn" onclick="setTrack('علوم')">عربي - علوم</button>
+                <button class="choice-btn" onclick="setTrack('Science')">English - Science</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="premium-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closePremium()">&times;</span>
+            <h3>اشتراك باقة المميز (المراجعات) ⭐</h3>
+            <p>سعر الاشتراك: 500 ج.م شهرياً</p>
+            <form id="registration-form">
+                <input type="text" id="student-name" placeholder="اسم الطالب الثلاثي" required>
+                <input type="tel" id="student-phone" placeholder="رقم الموبايل" required>
+                <select id="student-level">
+                    <option value="ابتدائي">ابتدائي</option>
+                    <option value="اعدادي">اعدادي</option>
+                    <option value="ثانوي">ثانوي</option>
+                </select>
+                <div class="payment-info">
+                    <p>للتفعيل: حول 500 ج على <b>01285758754</b> (فودافون كاش أو انستا باي)</p>
+                    <p>ثم ارسل لقطة الشاشة (اسكرين) للرقم عبر الواتساب</p>
+                </div>
+                <button type="submit" class="cta-btn">سجل بياناتك وإرسال الإيصال</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <header>
+            <div class="container nav-box">
+                <div class="logo" id="main-logo">Doctor Science</div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#" onclick="location.reload();">تغيير المسار</a></li>
+                        <li><button id="dark-mode-toggle"><i class="fas fa-moon"></i></button></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <h1>منصة المميز الذكية 🤖</h1>
+                    <p>مراجعات نهائية مدعمة بالذكاء الاصطناعي لمساعدتك في الفهم.</p>
+                    <a href="#stages" class="cta-btn">استعرض المراحل</a>
+                </div>
+                <div class="hero-image">
+                    <img src="image_2.png" alt="د. بيشوي" class="profile-img">
+                </div>
+            </div>
+        </section>
+
+        <section class="stages" id="stages">
+            <div class="container">
+                <h2 class="section-title">اختر مرحلتك الدراسية</h2>
+                <div class="stages-grid">
+                    <div class="stage-card" onclick="loadContent('ابتدائي')"><h3>المرحلة الابتدائية</h3></div>
+                    <div class="stage-card" onclick="loadContent('اعدادي')"><h3>المرحلة الإعدادية</h3></div>
+                    <div class="stage-card" onclick="loadContent('ثانوي')"><h3>المرحلة الثانوية</h3></div>
+                    <div class="stage-card premium-card" onclick="openPremium()">
+                        <span class="icon">⭐</span>
+                        <h3>باقة المميز</h3>
+                        <small>مراجعات حصرية</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lessons-section" class="lessons" style="display:none;">
+            <div class="container">
+                <h2 id="current-stage-title" class="section-title"></h2>
+                <div id="lessons-container" class="lessons-grid"></div>
+                
+                <div class="ai-assistant">
+                    <h4>🤖 مساعدك الذكي: مش فاهم نقطة؟</h4>
+                    <p>اضغط واسأل الذكاء الاصطناعي عن أي جزء في الفيديو.</p>
+                    <a href="https://wa.me/201285758754?text=انا مش فاهم نقطة في درس..." class="ai-btn">اسأل المساعد الآن</a>
+                </div>
+                
+                <button class="back-btn" onclick="showHome()">← العودة</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
