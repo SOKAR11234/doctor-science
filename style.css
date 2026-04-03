@@ -19,7 +19,66 @@ body {
 
 .container { max-width: 1100px; margin: auto; padding: 0 20px; }
 
-/* --- الأزرار الاحترافية --- */
+/* --- صورة المستر (قفل الأبعاد لمنع التضخم) --- */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px; /* ضمان مساحة للصورة */
+}
+
+.floating-img {
+    /* قفل الحجم بالظبط بالبكسل */
+    width: 280px !important;  /* الحجم المثالي على الكمبيوتر */
+    height: 280px !important; /* شكل مربع متناسق */
+    
+    border-radius: 50%; /* شكل دائري احترافي */
+    object-fit: cover; /* لضمان عدم مط الصورة */
+    
+    border: 5px solid rgba(0, 123, 255, 0.3); /* إطار خفيف */
+    filter: drop-shadow(0 10px 20px rgba(0, 123, 255, 0.2));
+    animation: float 5s ease-in-out infinite;
+    transition: 0.3s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* --- الهيدر الاحترافي --- */
+.main-header {
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    border-bottom: 1px solid #30363d;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header-flex { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 24px; font-weight: 900; color: white; }
+.logo span { color: var(--main); }
+
+/* --- قسم الـ Hero وصورة المستر --- */
+.hero-section { 
+    padding: 80px 0; 
+    background: radial-gradient(circle at 10%, #111827 0%, var(--dark) 80%); 
+}
+.hero-content { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap; 
+    gap: 40px; 
+}
+
+.hero-text { flex: 1.2; min-width: 300px; }
+.hero-text h1 { font-size: 38px; color: white; line-height: 1.3; }
+.hero-text h1 span { color: var(--main); }
+
+/* --- الأزرار المودرن --- */
 .btn-main {
     background: var(--blue-grad);
     color: white;
@@ -32,41 +91,21 @@ body {
     box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
-.btn-outline {
-    background: transparent;
-    color: white;
-    border: 2px solid #30363d;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-outline:hover {
-    border-color: var(--main);
-    color: var(--main);
-}
-
-/* زرار الباقة الذهبية */
-.btn-all-courses {
+.btn-all-courses { 
     background: var(--gold);
     color: #000 !important;
     border: none;
-    padding: 14px 28px;
+    padding: 12px 25px;
     border-radius: 50px;
-    font-weight: 900;
+    font-weight: bold;
     cursor: pointer;
+    margin-top: 15px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 20px rgba(241, 196, 15, 0.4);
-    transition: 0.3s;
+    box-shadow: 0 4px 20px rgba(241, 196, 15, 0.3);
 }
 
-.btn-all-courses:hover { transform: scale(1.05); }
-
-/* زرار الرئيسية الشيك */
 .btn-back {
     background: #1c212c;
     color: var(--main);
@@ -80,82 +119,55 @@ body {
     font-weight: bold;
 }
 
-/* --- الهيدر --- */
-.main-header {
-    background: rgba(10, 12, 16, 0.8);
-    backdrop-filter: blur(15px);
-    padding: 15px 0;
-    border-bottom: 1px solid #30363d;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* --- صورة المستر والـ Hero --- */
-.hero-section { padding: 80px 0; background: radial-gradient(circle at 20%, #111827 0%, var(--dark) 100%); }
-.hero-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
-
-.floating-img {
-    width: 100%;
-    max-width: 320px; /* حجم مثالي وصغير */
-    height: auto;
-    border-radius: 30px;
-    filter: drop-shadow(0 10px 30px rgba(0, 123, 255, 0.2));
-    animation: float 5s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-
 /* --- الكروت --- */
+.stages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 40px 0; }
 .stage-card {
     background: var(--card);
     padding: 35px;
-    border-radius: 24px;
+    border-radius: 20px;
     text-align: center;
     border: 1px solid #30363d;
     transition: 0.4s;
     cursor: pointer;
 }
-
 .stage-card:hover {
     border-color: var(--main);
     background: #1c212c;
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
-.stage-icon { font-size: 40px; color: var(--main); margin-bottom: 20px; }
+.stage-icon { font-size: 35px; color: var(--main); margin-bottom: 20px; }
 
 /* --- المودال --- */
 .modal-card {
     background: var(--card);
     padding: 30px;
-    border-radius: 25px;
+    border-radius: 20px;
     border: 1px solid var(--main);
     width: 90%;
     max-width: 400px;
 }
 
 /* --- الفيديوهات --- */
+.video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px 0; }
 .lesson-card {
     background: var(--card);
-    padding: 15px;
-    border-radius: 20px;
+    padding: 12px;
+    border-radius: 15px;
     border: 1px solid #30363d;
 }
-
 .lesson-card iframe {
     width: 100%;
     aspect-ratio: 16/9;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
-/* الموبايل */
+/* للموبايل */
 @media (max-width: 768px) {
     .hero-content { flex-direction: column-reverse; text-align: center; }
-    .floating-img { max-width: 250px; }
-    .hero-text h1 { font-size: 30px; }
+    .hero-text h1 { font-size: 28px; }
+    .floating-img {
+        width: 220px !important; /* حجم أصغر للموبايل */
+        height: 220px !important;
+    }
 }
