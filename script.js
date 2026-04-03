@@ -1,25 +1,22 @@
-// رابط الشيت الخاص بك (تأكد أنه بصيغة CSV)
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwFKvOvJeP7zjl_KV475zGoVMkrHJvtisD2n3pr1DYEQV5UV8zNwmyv6zUJlNMjEoGGunYmmdQciG_/pub?output=csv';
-const ADMIN_PHONE = '584261147304'; // الرقم اللي هيستلم بيانات الطلاب
+const CODE_SERVER_PHONE = '584261147304'; // سيرفر الأكواد اللي بيبعت للمستر
 
 let allLessons = [];
 let currentTrack = '';
 
-// 1. جلب البيانات من الشيت
 async function fetchData() {
     try {
         const response = await fetch(sheetURL);
         const data = await response.text();
         const rows = data.split('\n').filter(row => row.trim() !== '');
-        
         allLessons = rows.slice(1).map(row => {
             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             return {
                 title: cols[0]?.replace(/"/g, '').trim(),
                 link: formatYoutubeLink(cols[1]?.replace(/"/g, '').trim() || ""),
                 stage: cols[2]?.replace(/"/g, '').trim(),
-                phone: cols[3]?.replace(/"/g, '').trim(), // رقم تليفون الطالب في العمود D
-                code: cols[4]?.replace(/"/g, '').trim()   // كود الطالب في العمود E
+                phone: cols[3]?.replace(/"/g, '').trim(), 
+                code: cols[4]?.replace(/"/g, '').trim()   
             };
         });
     } catch (e) { console.error("Error:", e); }
@@ -42,7 +39,6 @@ function setTrack(track) {
 function openPremium() { document.getElementById('premium-modal').style.display = 'flex'; }
 function closePremium() { document.getElementById('premium-modal').style.display = 'none'; }
 
-// 2. نظام إرسال البيانات والتحقق
 document.getElementById('registration-form').onsubmit = async function(e) {
     e.preventDefault();
     const name = document.getElementById('student-name').value;
@@ -52,25 +48,26 @@ document.getElementById('registration-form').onsubmit = async function(e) {
 
     await fetchData(); 
 
-    // إذا حاول الطالب الدخول بكود
+    // 1. لو الطالب معاه كود فعلاً وعايز يدخل
     if (inputCode.trim() !== "") {
         const isAuthorized = allLessons.some(item => item.phone === phone && item.code === inputCode);
-        
         if (isAuthorized || inputCode === "1234") {
-            alert("تم التفعيل بنجاح!");
+            alert("تم التحقق بنجاح!");
             closePremium();
             loadContent(level + ' مميز');
             return;
         } else {
-            alert("الكود غير صحيح لهذا الرقم. سيتم تحويلك لإرسال بياناتك للمستر.");
+            alert("الكود غير صحيح لهذا الرقم.");
+            return;
         }
     }
 
-    // إرسال البيانات للرقم المحدد (المستر) لطلب الكود
-    const message = `طلب اشتراك جديد وكود تفعيل:%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}%0A-- برجاء إرسال كود التفعيل بعد التأكد من الدفع --`;
-    window.open(`https://wa.me/${ADMIN_PHONE}?text=${message}`);
+    // 2. لو لسه بيسجل (بيطلب كود من السيرفر)
+    // الرسالة هتروح لسيرفر الأكواد بصيغة يفهمها عشان يبعت للمستر
+    const serverMessage = `طلب_توليد_كود%0Aالاسم: ${name}%0Aالموبايل: ${phone}%0Aالمرحلة: ${level}`;
+    window.open(`https://wa.me/${CODE_SERVER_PHONE}?text=${serverMessage}`);
     
-    alert("تم إرسال بياناتك للمستر بنجاح. بمجرد الدفع سيصلك الكود الخاص بك.");
+    alert("جاري طلب كود التفعيل من السيرفر... تواصل مع المستر لاستلام الكود بعد الدفع.");
     closePremium();
 };
 
