@@ -6,14 +6,14 @@
     <title>Dr. Beshoy | منصة الدكتور بيشوي ثروت</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
 
     <div id="auth-overlay" class="overlay">
         <div class="auth-card">
             <div class="auth-header">
-                <img src="image_2.png" alt="د. بيشوي" class="auth-thumb">
+                <img src="image_2.png" alt="د. بيشوي ثروت" class="auth-thumb">
                 <h2 id="auth-title">إنشاء حساب جديد</h2>
                 <p>مرحباً بك في رحلة التميز في العلوم</p>
             </div>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="input-group">
                     <i class="fas fa-phone"></i>
-                    <input type="tel" id="user-phone" placeholder="رقم الموبايل" required>
+                    <input type="tel" id="user-phone" placeholder="رقم الموبايل (واتساب)" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
@@ -38,12 +38,40 @@
 
     <div id="track-overlay" class="overlay" style="display:none;">
         <div class="track-card">
-            <i class="fas fa-language"></i>
+            <i class="fas fa-language" style="font-size: 3rem; color: #007bff; margin-bottom: 20px;"></i>
             <h3>اختر مسارك الدراسي</h3>
+            <p>حدد لغة الدراسة لعرض المنهج المناسب</p>
             <div class="track-btns">
                 <button class="btn-main-grad" onclick="setTrack('علوم')">اللغة العربية</button>
                 <button class="btn-outline" onclick="setTrack('Science')">English Version</button>
             </div>
+        </div>
+    </div>
+
+    <div id="premium-modal" class="modal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>تفعيل الباقة الذهبية ⭐</h3>
+                <span class="close-btn" onclick="closePremium()">&times;</span>
+            </div>
+            <div class="payment-details">
+                <p class="price-tag">قيمة الاشتراك: <span>199 جنيه شهرياً</span></p>
+                <div class="instapay-box">
+                    <p>الدفع عبر InstaPay:</p>
+                    <div class="address-copy">
+                        <strong id="insta-addr">drbeshoy@instapay</strong>
+                        <button onclick="copyInsta()" title="نسخ"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+            <form id="subscription-form">
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="text" id="access-code" placeholder="أدخل كود التفعيل المستلم">
+                </div>
+                <button type="submit" class="btn-main-grad">تفعيل الباقة</button>
+                <p class="help-text">طلب كود جديد؟ <span onclick="requestNewCode()" style="color:#007bff; cursor:pointer;">اضغط هنا لمراسلة السيرفر</span></p>
+            </form>
         </div>
     </div>
 
@@ -52,59 +80,77 @@
             <div class="container header-flex">
                 <div class="logo">Dr.<span>Beshoy</span></div>
                 <div class="user-control">
-                    <span id="display-user-name"></span>
-                    <button class="logout-btn" onclick="logout()"><i class="fas fa-power-off"></i></button>
+                    <span id="display-user-name" class="user-welcome"></span>
+                    <button class="logout-btn" onclick="logout()" title="تسجيل خروج">
+                        <i class="fas fa-power-off"></i>
+                    </button>
                 </div>
             </div>
         </header>
 
-        <section class="hero-section">
-            <div class="container hero-grid">
-                <div class="hero-text">
-                    <h1>منصة الدكتور<br><span>بيشوي ثروت</span></h1>
-                    <p>تعلم الكيمياء والعلوم بأحدث التقنيات التفاعلية.</p>
-                    <div class="hero-btns">
-                        <a href="#stages" class="btn-main-grad">ابدأ الآن</a>
-                        <button class="btn-gold" onclick="loadContent('جميع الكورسات')">⭐ الباقة الذهبية</button>
+        <main>
+            <section class="hero-section">
+                <div class="container hero-grid">
+                    <div class="hero-text">
+                        <h1>منصة الدكتور<br><span>بيشوي ثروت</span></h1>
+                        <p>شرح العلوم والكيمياء بأحدث الأساليب العلمية الممتعة.</p>
+                        <div class="hero-btns">
+                            <a href="#stages" class="btn-main-grad">ابدأ التعلم الآن</a>
+                            <button class="btn-gold" onclick="loadContent('جميع الكورسات')">
+                                ⭐ الباقة الذهبية (199ج)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-img-container">
+                        <img src="image_2.png" alt="Dr. Beshoy Science" class="hero-img">
                     </div>
                 </div>
-                <div class="hero-img-container">
-                    <img src="image_2.png" alt="Dr. Beshoy" class="hero-img">
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="stages" class="stages-section">
-            <div class="container">
-                <h2 class="section-title">المراحل الدراسية</h2>
-                <div class="stages-grid">
-                    <div class="stage-card" onclick="loadContent('ابتدائي')">
-                        <i class="fas fa-microscope"></i>
-                        <h3>الابتدائية</h3>
-                    </div>
-                    <div class="stage-card" onclick="loadContent('اعدادي')">
-                        <i class="fas fa-flask"></i>
-                        <h3>الإعدادية</h3>
-                    </div>
-                    <div class="stage-card" onclick="loadContent('ثانوي')">
-                        <i class="fas fa-atom"></i>
-                        <h3>الثانوية</h3>
+            <section id="stages" class="stages-section">
+                <div class="container">
+                    <h2 class="section-title">المراحل الدراسية</h2>
+                    <div class="stages-grid">
+                        <div class="stage-card" onclick="loadContent('ابتدائي')">
+                            <div class="stage-icon"><i class="fas fa-microscope"></i></div>
+                            <h3>الابتدائية</h3>
+                            <p>تأسيس علمي متكامل</p>
+                        </div>
+                        <div class="stage-card" onclick="loadContent('اعدادي')">
+                            <div class="stage-icon"><i class="fas fa-flask"></i></div>
+                            <h3>الإعدادية</h3>
+                            <p>شرح مبسط وشامل</p>
+                        </div>
+                        <div class="stage-card" onclick="loadContent('ثانوي')">
+                            <div class="stage-icon"><i class="fas fa-atom"></i></div>
+                            <h3>الثانوية</h3>
+                            <p>كيمياء بمستوى عالمي</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="lessons-area" class="lessons-area" style="display:none;">
-            <div class="container">
-                <div class="area-header">
-                    <h2 id="current-title"></h2>
-                    <button class="btn-home" onclick="showHome()"><i class="fas fa-home"></i> الرئيسية</button>
+            <section id="lessons-area" class="lessons-area" style="display:none;">
+                <div class="container">
+                    <div class="area-header">
+                        <h2 id="current-title"></h2>
+                        <button class="btn-home" onclick="showHome()">
+                            <i class="fas fa-home"></i> الرئيسية
+                        </button>
+                    </div>
+                    <div id="video-grid" class="video-grid">
+                        </div>
                 </div>
-                <div id="video-grid" class="video-grid"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>جميع الحقوق محفوظة © 2026 | د. بيشوي ثروت</p>
             </div>
-        </section>
+        </footer>
     </div>
 
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=3.0"></script>
 </body>
 </html>
